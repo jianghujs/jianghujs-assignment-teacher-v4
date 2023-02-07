@@ -92,7 +92,10 @@
       assignmentScore() {
         let score = 0;
         for (const key in this.reviewData) {
-          score += parseInt(this.reviewData[key].score || 0)
+          if (this.reviewData[key].constructor === Object) {
+            console.log(key, this.reviewData[key].score)
+            score += parseInt(this.reviewData[key].score || 0)
+          }
         }
         return score
       }
