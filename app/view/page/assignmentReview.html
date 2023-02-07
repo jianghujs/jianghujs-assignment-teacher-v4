@@ -8,30 +8,29 @@
       <jh-menu />
       <v-main class="mt-15">
         <!-- 头部内容 >>>>>>>>>>>>> -->
-        <v-row>
+        <v-row class="px-8">
           <v-col cols="12" xs="12" sm="12" md="4" xl="3">
             <div class="pt-3 text-h7 font-weight-bold">
-              <span class="body-2 " style="font-weight: bold;">{{ courseName }}</span><br>
               <span class="body-1 " style="font-weight: bold;">{{ userAssignment.articleTitle }}</span>
             </div>
             <v-breadcrumbs class="pb-3 pt-0 pl-0" :items="breadcrumbs" divider="-"></v-breadcrumbs>
           </v-col>
           <!--pc端的搜索条件表单 >>>>>>>> -->
-          <v-col cols="12" xs="12" sm="12" md="8" xl="9">
+          <v-col cols="12" xs="12" sm="12" md="8" xl="9" v-if="!isAssignmentLoading">
             <v-row class="jh-backend-form-container justify-end ma-0 py-1 pb-xs-2">
               <v-col v-if="userAssignment.assignmentReviewStatus != 'publish'" class="d-flex" :class="{'pt-2': isMobile, 'px-0': isMobile}" style="justify-content: end">
                 <span class="body-1 " style="font-weight: bold; line-height: 40px;">作业批改-总分【{{ assignmentScore }}】</span>
-                <v-btn elevation="0" color="primary" dark @click.stop="doAction('submitArticleAssignment')">
+                <v-btn elevation="0" color="primary" dark @click.stop="doUiAction('submitArticleAssignment')">
                   保存批改
                 </v-btn>
                 <v-btn elevation="0" class="ml-1" color="error" dark
-                       @click.stop="doAction('submitArticleAssignment', {publish: 'publish'})">
+                       @click.stop="doUiAction('submitArticleAssignment', {publish: 'publish'})">
                   提交批改
                 </v-btn>
               </v-col>
               <v-col v-else class="d-flex" :class="{'pt-2': isMobile, 'px-0': isMobile}" style="justify-content: end">
                 <v-btn elevation="0" class="ml-1" color="warning" dark
-                       @click.stop="doAction('revertReviewAssignment')">
+                       @click.stop="doUiAction('revertReviewAssignment')">
                   撤销批改
                 </v-btn>
               </v-col>
@@ -43,8 +42,13 @@
 
         <div class="jh-page-body-container px-8">
           <!-- 页面内容 >>>>>>>>>>>>> -->
-          <v-card class="rounded-lg">
-            <form-item-list-review :form-item-list="userAssignment.assignmentUserAnswer" :review-data="reviewData" :answer-check="answerCheck":action="action"></form-item-list-review>
+          <v-skeleton-loader
+            class="mx-auto"
+            type="card,card"
+            v-if="isAssignmentLoading"
+          ></v-skeleton-loader>
+          <v-card class="rounded-lg" v-else>
+            <form-item-list-review :form-item-list="userAssignment.assignmentUserAnswer" :review-data="reviewData" :answer-check="answerCheck" :action="action"></form-item-list-review>
           </v-card>
           <!-- <<<<<<<<<<<<< 页面内容 -->
         </div>
@@ -70,6 +74,9 @@
 
 <!-- 加载页面组件 >>>>>>>>>>>>> -->
 {% include 'common/fixedTableHeightV4.html' %}
+
+{% include 'component/formItemListReview.html' %}
+{% include 'component/markdown2html/md2html.html' %}
 <!-- <<<<<<<<<<<<< 加载页面组件 -->
 
 <script type="module">
@@ -98,7 +105,7 @@
           disabled: true,
         },
         {
-          text: 'doUiAction',
+          text: '作业批改',
           disabled: true,
         }
       ],
@@ -144,6 +151,9 @@
             break;
           case 'jumpToReviewPage':
             await this.jumpToReviewPage(uiActionData);
+            break;
+          case 'revertReviewAssignment':
+            await this.revertReviewAssignment(uiActionData);
             break;
           default:
             console.error("[doUiAction] uiActionId not find", { uiActionId });
@@ -351,7 +361,7 @@
         const actionData = this.buildSubmitActionData(assignmentId, publish);
         await this.submitAssignment(assignmentId, actionData);
         window.vtoast.success(publish ? "提交批改成功" : "保存批改成功");
-        this.doAction('mineAssignment', this.where);
+        this.doUiAction('getAssignmentData', {});
       },
       initEditorMd(that, id, content, onImageUpload, change) {
         that.$nextTick(() => {
@@ -370,23 +380,6 @@
           }
         })
       },
-
-      async getCourseInfo() {
-        console.log('this.courseBatchId: ',this.courseBatchId)
-        const { rows } = (await window.jianghuAxios({
-          data: {
-            appData: {
-              pageId: 'assignmentReview',
-              actionId: 'getCourseInfo',
-              actionData: {},
-              where: { courseBatchId: this.courseBatchId },
-            }
-          }
-        })).data.appData.resultData;
-        this.courseName = rows[0].courseName;
-      }
-      ,
-
       // ---------- 斑马纹开关 uiAction >>>>>>>>>> --------
       async openTableZebraLineMenu(funObj) {
         this.tableZebraLineMenuPosition.x = funObj.x -funObj.offsetX + 10;
