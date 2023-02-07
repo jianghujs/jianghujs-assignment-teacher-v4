@@ -23,9 +23,9 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --port=7001 --title=jianghujs-assignment-teacher",
+    "start": "egg-scripts start --daemon --port=7101 --title=jianghujs-assignment-teacher",
     "stop": "egg-scripts stop --title=jianghujs-assignment-teacher",
-    "dev": "egg-bin dev --port=7001",
+    "dev": "egg-bin dev --port=7101",
     "debug": "egg-bin debug",
     "jianghuConfigImportData": "jianghu jianghuConfigImportData",
     "jianghuConfigDumpData": "jianghu jianghuConfigDumpData",
