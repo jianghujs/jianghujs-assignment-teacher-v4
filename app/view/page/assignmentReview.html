@@ -158,6 +158,9 @@
           case 'revertReviewAssignment':
             await this.revertReviewAssignment(uiActionData);
             break;
+          case 'submitArticleAssignment':
+            await this.submitArticleAssignment(uiActionData);
+            break;
           default:
             console.error("[doUiAction] uiActionId not find", { uiActionId });
             break;
@@ -336,11 +339,6 @@
       // ---------- 撤销提交 >>>>>>>>>> --------
       // ---------- <<<<<<<<<< 提交批改 --------
       checkAndGetPropertyFromUserAssignment(publish) {
-        if (['articleId', 'courseBatchId', 'userId'].some( e => !this.where[e])) {
-          // window.vtoast.fail("无作业提交");
-          console.log('缺少参数');
-          return { error: true };
-        }
         if (!['submit', 'publish'].includes(this.userAssignment.assignmentSubmitStatus)) {
           window.vtoast.fail("用户尚未提交作业，禁止批改");
           return { error: true };
@@ -375,7 +373,7 @@
           }
         })
       },
-      async submitArticleAssignment({publish}) {
+      async submitArticleAssignment({publish = false} = {}) {
         const {assignmentId, error } = this.checkAndGetPropertyFromUserAssignment(publish);
         if(error) return;
         window.vtoast.loading("保存批改中...");

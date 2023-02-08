@@ -110,10 +110,20 @@
           disabled: true,
         }
       ],
+      constantCollection: {
+        assignmentStatus: {
+          save: '已保存',
+          submit: '已提交',
+          new: '新作业',
+        },
+        assignmentReviewStatus: {
+          publish: '已批改',
+        },
+      },
 
       // 表格相关数据
       isTableZebraLineMenuShown: false,
-      tableZebraLineMenuPosition: {x: null, y: null},
+      tableZebraLineMenuPosition: { x: null, y: null },
       isTableZebraLineShown: true,
       validationRules: {
         requireRules: [
@@ -125,16 +135,14 @@
       tableData: [],
       headers: [
         { text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed' },
-        { text: "文章ID", value: "articleId", width: 120 },
-        { text: "用户ID", value: "userId", width: 120 },
-        { text: "文章标题", value: "articleTitle", width: 250 },
-        { text: "作业重做次数", value: "assignmentRetryNumber", width: 120 },
-        { text: "作业分数", value: "assignmentScore", width: 90 },
-        { text: "作业总分", value: "assignmentFullMarks", width: 90 },
-        { text: "作业提交状态", value: "assignmentSubmitStatus", width: 120 },
-        { text: "作业提交时间", value: "assignmentSubmitAt", width: 200 },
-        { text: "批改状态", value: "assignmentReviewStatus", width: 120 },
-        { text: "批改时间", value: "assignmentReviewAt", width: 200 },
+        { text: "作业ID", value: "assignmentId", width: 60 },
+        { text: "用户ID", value: "userId", width: 60 },
+        { text: "文章标题", value: "assignmentName", width: 300 },
+
+        { text: "作业提交状态", value: "assignmentSubmitStatus", width: 60 },
+        { text: "作业提交时间", value: "assignmentSubmitAt", width: 100 },
+        { text: "批改状态", value: "assignmentReviewStatus", width: 100 },
+        { text: "批改时间", value: "assignmentReviewAt", width: 100 },
       ],
 
     },
@@ -176,13 +184,16 @@
           assignment.assignmentSubmitAt = assignment.assignmentSubmitAt ? dayjs(assignment.assignmentSubmitAt).format('YYYY-MM-DD HH:mm:ss') : '';
           assignment.assignmentReviewAt = assignment.assignmentReviewAt ? dayjs(assignment.assignmentReviewAt).format('YYYY-MM-DD HH:mm:ss') : '';
           assignment.assignmentScore = assignment.assignmentReviewStatus === 'publish' ? assignment.assignmentScore : '';
+          // 作业提交和批改状态
+          assignment.assignmentSubmitStatus = this.constantCollection.assignmentStatus[assignment.assignmentSubmitStatus]
+          assignment.assignmentReviewStatus = this.constantCollection.assignmentReviewStatus[assignment.assignmentReviewStatus]
         })
         this.tableData = rows;
         this.isTableLoading = false;
       },
       // ---------- 斑马纹开关 uiAction >>>>>>>>>> --------
       async openTableZebraLineMenu(funObj) {
-        this.tableZebraLineMenuPosition.x = funObj.x -funObj.offsetX + 10;
+        this.tableZebraLineMenuPosition.x = funObj.x - funObj.offsetX + 10;
         this.tableZebraLineMenuPosition.y = window.innerHeight - 50;
         this.isTableZebraLineMenuShown = !this.isTableZebraLineMenuShown;
       },
