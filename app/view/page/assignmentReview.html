@@ -18,7 +18,7 @@
           <!--pc端的搜索条件表单 >>>>>>>> -->
           <v-col cols="12" xs="12" sm="12" md="8" xl="9" v-if="!isAssignmentLoading">
             <v-row class="jh-backend-form-container justify-end ma-0 py-1 pb-xs-2">
-              <v-col v-if="userAssignment.assignmentReviewStatus != 'publish'" class="d-flex" :class="{'pt-2': isMobile, 'px-0': isMobile}" style="justify-content: end">
+              <v-col v-if="userAssignment.assignmentReviewStatus != 'publish'" class="d-flex sm-pt-2 sm-px-0" style="justify-content: end">
                 <span class="body-1 " style="font-weight: bold; line-height: 40px;">作业批改-总分【{{ assignmentScore }}】</span>
                 <v-btn elevation="0" color="primary" dark @click.stop="doUiAction('submitArticleAssignment')">
                   保存批改
@@ -28,7 +28,7 @@
                   提交批改
                 </v-btn>
               </v-col>
-              <v-col v-else class="d-flex" :class="{'pt-2': isMobile, 'px-0': isMobile}" style="justify-content: end">
+              <v-col v-else class="d-flex sm-pt-2 sm-px-0" style="justify-content: end">
                 <v-btn elevation="0" class="ml-1" color="warning" dark
                        @click.stop="doUiAction('revertReviewAssignment')">
                   撤销批改
@@ -68,7 +68,7 @@
 {% endblock %}
 
 {% block vueScript %}
-<link rel="stylesheet" href="/<$ ctx.app.config.appId $>/public/plugins/editor.md/css/editormd.min.css"/>
+<link rel="stylesheet" href="/<$ ctx.app.config.appId $>/public/plugins/editor.md/css/editormd.min.css" />
 <script src="/<$ ctx.app.config.appId $>/public/js/lib/jquery.min.js"></script>
 <script src="/<$ ctx.app.config.appId $>/public/plugins/editor.md/editormd.js"></script>
 
@@ -85,21 +85,6 @@
     template: '#app-template',
     vueComponent: 'page',
     vuetify: new Vuetify(),
-    computed: {
-      isMobile() {
-        return window.innerWidth < 600;
-      },
-      assignmentScore() {
-        let score = 0;
-        for (const key in this.reviewData) {
-          if (this.reviewData[key].constructor === Object) {
-            console.log(key, this.reviewData[key].score)
-            score += parseInt(this.reviewData[key].score || 0)
-          }
-        }
-        return score
-      }
-    },
     data: {
       // 面包屑
       breadcrumbs: [
@@ -116,7 +101,7 @@
 
       // 表格相关数据
       isTableZebraLineMenuShown: false,
-      tableZebraLineMenuPosition: {x: null, y: null},
+      tableZebraLineMenuPosition: { x: null, y: null },
       isTableZebraLineShown: true,
       // 生日日期选择
       validationRules: {
@@ -124,8 +109,9 @@
           v => !!v || 'This is required',
         ],
       },
-      
+
       isAssignmentLoading: false,
+      isCanSubmit: true,
       userAssignment: {
         assignmentUserAnswer: []
       },
@@ -134,10 +120,22 @@
       assignmentId: '',
       reviewData: {},
       answerCheck: {},
-      courseName:'',
+      courseName: '',
       assignmentOptionKey: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'],
     },
-    watch: {},
+    computed: {
+      // 作业总分计算
+      assignmentScore() {
+        let score = 0;
+        for (const key in this.reviewData) {
+          if (this.reviewData[key].constructor === Object) {
+            console.log(key, this.reviewData[key].score)
+            score += parseInt(this.reviewData[key].score || 0)
+          }
+        }
+        return score
+      }
+    },
     mounted() {
       const urlParams = new URLSearchParams(location.search);
       this.assignmentId = urlParams.get('assignmentId');
@@ -159,6 +157,7 @@
             await this.revertReviewAssignment(uiActionData);
             break;
           case 'submitArticleAssignment':
+            await this.checkArticleAssignmentStatus(uiActionData);
             await this.submitArticleAssignment(uiActionData);
             break;
           default:
@@ -167,6 +166,7 @@
         }
       },
 
+      // 获取作业数据
       async getAssignmentData() {
         this.isAssignmentLoading = true;
         const rows = (await window.jianghuAxios({
@@ -175,7 +175,7 @@
               pageId: 'assignmentReview',
               actionId: 'selectItemList',
               actionData: {},
-              where: {assignmentId: this.assignmentId},
+              where: { assignmentId: this.assignmentId },
             }
           }
         })).data.appData.resultData.rows;
@@ -195,19 +195,19 @@
           assignmentStandardAnswer.forEach((item, index) => {
             this.answerCheck[item.id] = {
               scoreType: 'score',
-              answer: item.component.answer ,
-              answerString: this.getAnswerString(item.component) ,
+              answer: item.component.answer,
+              answerString: this.getAnswerString(item.component),
               isRight: this.checkAnswerIsRight(item.component, assignmentUserAnswer[index].user.answer),
             }
             const itemList = item.component.itemList
             if (itemList) {
               const parent = assignmentUserAnswer[index]
-              itemList.map(childItem=> {
-                const childItemAnswer = parent.component.itemList.filter(answerItem=> answerItem.id === childItem.id)[0] || {}
+              itemList.map(childItem => {
+                const childItemAnswer = parent.component.itemList.filter(answerItem => answerItem.id === childItem.id)[0] || {}
                 this.answerCheck[childItem.id] = {
                   scoreType: 'score',
-                  answer: childItem.component.answer ,
-                  answerString: this.getAnswerString(childItem.component) ,
+                  answer: childItem.component.answer,
+                  answerString: this.getAnswerString(childItem.component),
                   isRight: this.checkAnswerIsRight(childItem.component, childItemAnswer.user.answer),
                 }
               })
@@ -222,12 +222,8 @@
             if (item.component.type === 'markdown') {
               console.log(`editorMdContainer-${index}`)
               this.initEditorMd(this, `editorMdContainer-${index}`, item.answer, () => {
-                // this.openImageUploadDrawer();
               }, (content, contentForSeo) => {
-                // this.mdChanged = true;
-                // this.editItem[key] = content;
                 item.answer = content;
-                // this.editItem[`${key}ForSeo`] = contentForSeo;
               });
             }
           })
@@ -245,10 +241,10 @@
               score: '',
               comment: ''
             }
-            
+
             const itemList = item.component.itemList
             if (itemList) {
-              itemList.map(childItem=> {
+              itemList.map(childItem => {
                 assignmentReview[childItem.id] = {
                   score: '',
                   comment: ''
@@ -257,9 +253,9 @@
             }
           })
         }
-        return {assignmentUserAnswer, assignmentStandardAnswer, assignmentReview};
+        return { assignmentUserAnswer, assignmentStandardAnswer, assignmentReview };
       },
-      checkAnswerIsRight({type, answer, statement}, userAnswer) {
+      checkAnswerIsRight({ type, answer, statement }, userAnswer) {
         switch (type) {
           case "单选":
           case "singleSelect":
@@ -281,12 +277,11 @@
           case "Markdown":
           case "markdown":
             return false;
-          default :
+          default:
             return false;
         }
       },
-
-      getAnswerString({type, answer, selectOptionList, statement}) {
+      getAnswerString({ type, answer, selectOptionList, statement }) {
         switch (type) {
           case "singleSelect":
             return this.assignmentOptionKey[selectOptionList.findIndex(e => e === answer)];
@@ -303,7 +298,7 @@
           case "富文本":
           case "markdown":
             return '';
-          default :
+          default:
             return 'default';
         }
       },
@@ -330,7 +325,8 @@
         const actionData = {
           assignmentReviewStatus: ''
         }
-        const {assignmentId} = this.userAssignment;
+        window.vtoast.loading("撤销批改中...");
+        const { assignmentId } = this.userAssignment;
         await this.submitAssignment(assignmentId, actionData);
         // 提示撤销成功
         this.userAssignment.assignmentReviewStatus = '';
@@ -338,15 +334,12 @@
       },
       // ---------- 撤销提交 >>>>>>>>>> --------
       // ---------- <<<<<<<<<< 提交批改 --------
-      checkAndGetPropertyFromUserAssignment(publish) {
+      async checkArticleAssignmentStatus() {
         if (!['submit', 'publish'].includes(this.userAssignment.assignmentSubmitStatus)) {
-          window.vtoast.fail("用户尚未提交作业，禁止批改");
-          return { error: true };
+          const failMsg = "用户尚未提交作业，禁止批改"
+          window.vtoast.fail(failMsg);
+          throw new Error(`[checkArticleAssignmentStatus] ${failMsg}`);
         }
-        return {
-          error: false,
-          assignmentId: this.userAssignment.assignmentId,
-        };
       },
       buildSubmitActionData(assignmentId, publish) {
         const actionData = {
@@ -367,25 +360,26 @@
             appData: {
               pageId: "assignmentReview",
               actionId: "updateItem",
-              where: {assignmentId},
+              where: { assignmentId },
               actionData
             }
           }
         })
       },
-      async submitArticleAssignment({publish = false} = {}) {
-        const {assignmentId, error } = this.checkAndGetPropertyFromUserAssignment(publish);
-        if(error) return;
+      async submitArticleAssignment({ publish }) {
+        if (!this.isCanSubmit) return;
+        this.isCanSubmit = false;
         window.vtoast.loading("保存批改中...");
-        const actionData = this.buildSubmitActionData(assignmentId, publish);
-        await this.submitAssignment(assignmentId, actionData);
+        const actionData = this.buildSubmitActionData(this.assignmentId, publish);
+        await this.submitAssignment(this.assignmentId, actionData);
         window.vtoast.success(publish ? "提交批改成功" : "保存批改成功");
+        this.isCanSubmit = true;
         this.doUiAction('getAssignmentData', {});
       },
       // ---------- 提交批改 >>>>>>>>>> --------
       // ---------- 斑马纹开关 uiAction >>>>>>>>>> --------
       async openTableZebraLineMenu(funObj) {
-        this.tableZebraLineMenuPosition.x = funObj.x -funObj.offsetX + 10;
+        this.tableZebraLineMenuPosition.x = funObj.x - funObj.offsetX + 10;
         this.tableZebraLineMenuPosition.y = window.innerHeight - 50;
         this.isTableZebraLineMenuShown = !this.isTableZebraLineMenuShown;
       },
@@ -399,28 +393,42 @@
   })
 </script>
 
-<style >
+<style>
   @media screen and (max-width: 600px) {
     .right-box {
       padding-bottom: 130px !important;
     }
   }
-  
+
   .right-box .v-expansion-panel .v-expansion-panel-header {
     min-height: auto;
   }
-  
+
   .right-box .v-expansion-panel-content__wrap {
     padding: 0px;
   }
-  
-  .right-box .v-expansion-panel .v-list-item__action, .v-list-item__avatar, .v-list-item__icon {
+
+  .right-box .v-expansion-panel .v-list-item__action,
+  .v-list-item__avatar,
+  .v-list-item__icon {
     display: inline-block;
     min-width: 24px;
   }
+
   .disabled-text {
     color: gray;
     background-color: #efefef;
+  }
+
+  @media (max-width: 600px) {
+    .sm-pt-2 {
+      padding-top: 10px;
+    }
+
+    .sm-px-0 {
+      padding-left: 0;
+      padding-right: 0;
+    }
   }
 </style>
 {% endblock %}

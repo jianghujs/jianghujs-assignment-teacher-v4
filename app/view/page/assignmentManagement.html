@@ -137,14 +137,13 @@
         { text: '操作', value: 'action', align: 'center', sortable: false, width: 120, class: 'fixed', cellClass: 'fixed' },
         { text: "作业ID", value: "assignmentId", width: 60 },
         { text: "用户ID", value: "userId", width: 60 },
-        { text: "文章标题", value: "assignmentName", width: 300 },
+        { text: "文章标题", value: "articleTitle", width: 300 },
 
         { text: "作业提交状态", value: "assignmentSubmitStatus", width: 60 },
         { text: "作业提交时间", value: "assignmentSubmitAt", width: 100 },
         { text: "批改状态", value: "assignmentReviewStatus", width: 100 },
         { text: "批改时间", value: "assignmentReviewAt", width: 100 },
       ],
-
     },
     mounted() {
       this.doUiAction('getTableData');
@@ -166,7 +165,6 @@
             break;
         }
       },
-
       async getTableData() {
         this.isTableLoading = true;
         const rows = (await window.jianghuAxios({
