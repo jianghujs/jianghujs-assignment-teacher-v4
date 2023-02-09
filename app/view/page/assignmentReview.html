@@ -97,7 +97,6 @@
           disabled: true,
         }
       ],
-      isHelpPageDrawerShown: false,
 
       // 表格相关数据
       isTableZebraLineMenuShown: false,
@@ -115,12 +114,10 @@
       userAssignment: {
         assignmentUserAnswer: []
       },
-      article: {},
-      action: '',
+      action: '', 
       assignmentId: '',
       reviewData: {},
       answerCheck: {},
-      courseName: '',
       assignmentOptionKey: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'],
     },
     computed: {
@@ -366,7 +363,7 @@
           }
         })
       },
-      async submitArticleAssignment({ publish }) {
+      async submitArticleAssignment({ publish = false } = {}) {
         if (!this.isCanSubmit) return;
         this.isCanSubmit = false;
         window.vtoast.loading("保存批改中...");
