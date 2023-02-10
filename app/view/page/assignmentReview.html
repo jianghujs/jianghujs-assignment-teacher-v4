@@ -48,7 +48,7 @@
             v-if="isAssignmentLoading"
           ></v-skeleton-loader>
           <v-card class="rounded-lg" v-else>
-            <form-item-list-review :form-item-list="userAssignment.assignmentUserAnswer" :review-data="reviewData" :answer-check="answerCheck" :action="action"></form-item-list-review>
+            <form-item-list-review :form-item-list="userAssignment.assignmentUserAnswer" :review-data="reviewData" :answer-check="answerCheck"></form-item-list-review>
           </v-card>
           <!-- <<<<<<<<<<<<< 页面内容 -->
         </div>
@@ -71,7 +71,6 @@
 <link rel="stylesheet" href="/<$ ctx.app.config.appId $>/public/plugins/editor.md/css/editormd.min.css" />
 <script src="/<$ ctx.app.config.appId $>/public/js/lib/jquery.min.js"></script>
 <script src="/<$ ctx.app.config.appId $>/public/plugins/editor.md/editormd.js"></script>
-
 <!-- 加载页面组件 >>>>>>>>>>>>> -->
 {% include 'common/fixedTableHeightV4.html' %}
 
@@ -114,7 +113,6 @@
       userAssignment: {
         assignmentUserAnswer: []
       },
-      action: '', 
       assignmentId: '',
       reviewData: {},
       answerCheck: {},
@@ -317,7 +315,7 @@
         })
       },
       // ---------- 格式化处理作业数据 >>>>>>>>>> --------
-      // ---------- <<<<<<<<<< 撤销提交 --------
+      // ---------- <<<<<<<<<< 撤销提交 uiAction --------
       async revertReviewAssignment() {
         const actionData = {
           assignmentReviewStatus: ''
@@ -329,8 +327,8 @@
         this.userAssignment.assignmentReviewStatus = '';
         window.vtoast.success('撤销批改成功');
       },
-      // ---------- 撤销提交 >>>>>>>>>> --------
-      // ---------- <<<<<<<<<< 提交批改 --------
+      // ---------- 撤销提交 uiAction >>>>>>>>>> --------
+      // ---------- <<<<<<<<<< 提交批改 uiAction --------
       async checkArticleAssignmentStatus() {
         if (!['submit', 'publish'].includes(this.userAssignment.assignmentSubmitStatus)) {
           const failMsg = "用户尚未提交作业，禁止批改"
@@ -373,7 +371,7 @@
         this.isCanSubmit = true;
         this.doUiAction('getAssignmentData', {});
       },
-      // ---------- 提交批改 >>>>>>>>>> --------
+      // ---------- 提交批改 uiAction >>>>>>>>>> --------
       // ---------- 斑马纹开关 uiAction >>>>>>>>>> --------
       async openTableZebraLineMenu(funObj) {
         this.tableZebraLineMenuPosition.x = funObj.x - funObj.offsetX + 10;
