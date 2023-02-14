@@ -91,11 +91,9 @@
             </v-data-table>
           </v-card>
           <!-- <<<<<<<<<<<<< 页面内容 -->
-          <!--抽屉遮罩层-->
-          <v-overlay app :value="isHelpPageDrawerShown"></v-overlay>
           
           <!-- 帮助页抽屉 >>>>>>>>>>>>> -->
-          <v-navigation-drawer v-model="isHelpPageDrawerShown" fixed temporary right width="80%" hide-overlay
+          <v-navigation-drawer v-model="isHelpPageDrawerShown" fixed temporary right width="80%" :permanent="isHelpPageDrawerShown"
           class="elevation-24">
           <iframe style="border: 0" :src="`/${appInfo.appId}/pageDoc#README.md`" width="100%"
             height="100%"></iframe>
@@ -214,34 +212,30 @@
       },
       async getTableData() {
         this.isTableLoading = true;
-        const backendSearchData = _.pickBy(this.serverSearchInput, (fieldValue, fieldKey) => {
-          if (fieldValue !== null && fieldValue !== '') {
-            return true;
-          }
-        });
-
+        const backendSearchData = _.pickBy(this.serverSearchInput, (value) => value);
         const rows = (await window.jianghuAxios({
           data: {
             appData: {
               pageId: 'assignmentManagement',
               actionId: 'selectItemList',
-              actionData: {},
               where: backendSearchData,
               orderBy: [{ column: 'operationAt', order: 'desc' }]
             }
           }
         })).data.appData.resultData.rows;
-        rows.forEach(assignment => {
+
+        this.tableData = rows.map(assignment => {
           assignment.assignmentSubmitAt = assignment.assignmentSubmitAt ? dayjs(assignment.assignmentSubmitAt).format('YYYY-MM-DD HH:mm:ss') : '';
           assignment.assignmentReviewAt = assignment.assignmentReviewAt ? dayjs(assignment.assignmentReviewAt).format('YYYY-MM-DD HH:mm:ss') : '';
           assignment.assignmentScore = assignment.assignmentReviewStatus === 'publish' ? assignment.assignmentScore : '';
-          // 作业提交和批改状态
-          assignment.assignmentSubmitStatus = this.constantCollection.assignmentStatus[assignment.assignmentSubmitStatus]
-          assignment.assignmentReviewStatus = this.constantCollection.assignmentReviewStatus[assignment.assignmentReviewStatus]
-        })
-        this.tableData = rows;
+          assignment.assignmentSubmitStatus = this.constantCollection.assignmentStatus[assignment.assignmentSubmitStatus];
+          assignment.assignmentReviewStatus = this.constantCollection.assignmentReviewStatus[assignment.assignmentReviewStatus];
+          return assignment;
+        });
+
         this.isTableLoading = false;
-      },
+      }
+      ,
       // ---------- 场景 uiAction >>>>>>>>>> --------
       useScene(funObj) {
         this.currentSceneId = funObj.id;

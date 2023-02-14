@@ -274,10 +274,14 @@
             return false;
         }
       },
-      getAnswerString({ type, answer, selectOptionList, statement }) {
+      getAnswerInfo({ type, answer, selectOptionList, statement, userAnswer }) {
+        const answerInfo = {
+          answer: '',
+          isRight: false,
+        }
         switch (type) {
           case "singleSelect":
-            return this.assignmentOptionKey[selectOptionList.findIndex(e => e === answer)];
+            answerInfo.answer = this.assignmentOptionKey[selectOptionList.findIndex(e => e === answer)];
           case "multipleSelect":
             return answer.map((item, index) => {
               return this.assignmentOptionKey[selectOptionList.findIndex(e => e === item)]
@@ -294,6 +298,8 @@
           default:
             return 'default';
         }
+
+        return answerInfo;
       },
       initEditorMd(that, id, content, onImageUpload, change) {
         that.$nextTick(() => {
