@@ -3,63 +3,63 @@
 {% block vueTemplate %}
 
 <script type="text/html" id="app-template">
-  <div>
-    <v-app mobile-breakpoint="sm">
-      <jh-menu />
-      <v-main class="mt-15">
-        <!-- 头部内容 >>>>>>>>>>>>> -->
-        <v-row class="px-8">
-          <v-col cols="12" xs="12" sm="12" md="4" xl="3">
-            <div class="pt-3 text-h7 font-weight-bold">
-              <span class="body-1 " style="font-weight: bold;">{{ userAssignment.articleTitle }}</span>
-            </div>
-            <v-breadcrumbs class="pb-3 pt-0 pl-0" :items="breadcrumbs" divider="-"></v-breadcrumbs>
-          </v-col>
-          <!--pc端的搜索条件表单 >>>>>>>> -->
-          <v-col cols="12" xs="12" sm="12" md="8" xl="9" v-if="!isAssignmentLoading">
-            <v-row class="jh-backend-form-container justify-end ma-0 py-1 pb-xs-2">
-              <v-col v-if="userAssignment.assignmentReviewStatus != 'publish'" class="d-flex sm-pt-2 sm-px-0" style="justify-content: end">
-                <span class="body-1 " style="font-weight: bold; line-height: 40px;">作业批改-总分【{{ assignmentScore }}】</span>
-                <v-btn elevation="0" color="primary" dark @click.stop="doUiAction('submitArticleAssignment')">
-                  保存批改
-                </v-btn>
-                <v-btn elevation="0" class="ml-1" color="error" dark
-                       @click.stop="doUiAction('submitArticleAssignment', {publish: 'publish'})">
-                  提交批改
-                </v-btn>
-              </v-col>
-              <v-col v-else class="d-flex sm-pt-2 sm-px-0" style="justify-content: end">
-                <v-btn elevation="0" class="ml-1" color="warning" dark
-                       @click.stop="doUiAction('revertReviewAssignment')">
-                  撤销批改
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-col>
-          <!-- <<<<<<<< pc端的搜索条件表单 -->
-        </v-row>
-        <!-- <<<<<<<<<<<<< 头部内容 -->
+<div>
+  <v-app mobile-breakpoint="sm">
+    <jh-menu />
+    <v-main class="mt-15">
+      <!-- 头部内容 >>>>>>>>>>>>> -->
+      <v-row class="px-8">
+        <v-col cols="12" xs="12" sm="12" md="4" xl="3">
+          <div class="pt-3 text-h7 font-weight-bold">
+            <span class="body-1 " style="font-weight: bold;">{{ userAssignment.articleTitle }}</span>
+          </div>
+          <v-breadcrumbs class="pb-3 pt-0 pl-0" :items="breadcrumbs" divider="-"></v-breadcrumbs>
+        </v-col>
+        <!--pc端的搜索条件表单 >>>>>>>> -->
+        <v-col cols="12" xs="12" sm="12" md="8" xl="9" v-if="!isAssignmentLoading">
+          <v-row class="jh-backend-form-container justify-end ma-0 py-1 pb-xs-2">
+            <v-col v-if="userAssignment.assignmentReviewStatus != 'publish'" class="d-flex sm-pt-2 sm-px-0 pr-0" style="justify-content: end">
+              <span class="body-1 " style="font-weight: bold; line-height: 32px;">作业批改-总分【{{ assignmentScore }}】</span>
+              <v-btn elevation="0" small color="primary" dark @click.stop="doUiAction('submitArticleAssignment')">
+                保存批改
+              </v-btn>
+              <v-btn elevation="0" small class="ml-1" color="error" dark
+                     @click.stop="doUiAction('submitArticleAssignment', {publish: 'publish'})">
+                提交批改
+              </v-btn>
+            </v-col>
+            <v-col v-else class="d-flex sm-pt-2 sm-px-0" style="justify-content: end">
+              <v-btn elevation="0" small color="warning" dark
+                     @click.stop="doUiAction('revertReviewAssignment')">
+                撤销批改
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-col>
+        <!-- <<<<<<<< pc端的搜索条件表单 -->
+      </v-row>
+      <!-- <<<<<<<<<<<<< 头部内容 -->
 
-        <div class="jh-page-body-container px-8">
-          <!-- 页面内容 >>>>>>>>>>>>> -->
-          <v-skeleton-loader
-            class="mx-auto"
-            type="card,card"
-            v-if="isAssignmentLoading"
-          ></v-skeleton-loader>
-          <v-card class="rounded-lg" v-else>
-            <form-item-list-review :form-item-list="userAssignment.assignmentUserAnswer" :review-data="reviewData" :answer-check="answerCheck"></form-item-list-review>
-          </v-card>
-          <!-- <<<<<<<<<<<<< 页面内容 -->
-        </div>
-      </v-main>
-    </v-app>
+      <div class="jh-page-body-container px-8">
+        <!-- 页面内容 >>>>>>>>>>>>> -->
+        <v-skeleton-loader
+          class="mx-auto"
+          type="card,card"
+          v-if="isAssignmentLoading"
+        ></v-skeleton-loader>
+        <v-card class="rounded-lg" v-else>
+          <form-item-list-review :form-item-list="userAssignment.assignmentUserAnswer" :review-data="reviewData" :answer-check="answerCheck"></form-item-list-review>
+        </v-card>
+        <!-- <<<<<<<<<<<<< 页面内容 -->
+      </div>
+    </v-main>
+  </v-app>
 
-    <jh-toast />
-    <jh-mask />
-    <jh-confirm-dialog />
+  <jh-toast />
+  <jh-mask />
+  <jh-confirm-dialog />
 
-  </div>
+</div>
 </script>
 
 <div id="app">
@@ -77,357 +77,356 @@
 <!-- <<<<<<<<<<<<< 加载页面组件 -->
 
 <script type="module">
-  new Vue({
-    el: '#app',
-    template: '#app-template',
-    vueComponent: 'page',
-    vuetify: new Vuetify(),
-    data: {
-      // 面包屑
-      breadcrumbs: [
-        {
-          text: '首页',
-          disabled: true,
-        },
-        {
-          text: '作业批改',
-          disabled: true,
-        }
+new Vue({
+  el: '#app',
+  template: '#app-template',
+  vueComponent: 'page',
+  vuetify: new Vuetify(),
+  data: {
+    // 面包屑
+    breadcrumbs: [
+      {
+        text: '首页',
+        disabled: true,
+      },
+      {
+        text: '作业批改',
+        disabled: true,
+      }
+    ],
+
+    // 表格相关数据
+    isTableZebraLineMenuShown: false,
+    tableZebraLineMenuPosition: {x: null, y: null},
+    isTableZebraLineShown: true,
+    // 生日日期选择
+    validationRules: {
+      requireRules: [
+        v => !!v || 'This is required',
       ],
-
-      // 表格相关数据
-      isTableZebraLineMenuShown: false,
-      tableZebraLineMenuPosition: { x: null, y: null },
-      isTableZebraLineShown: true,
-      // 生日日期选择
-      validationRules: {
-        requireRules: [
-          v => !!v || 'This is required',
-        ],
-      },
-
-      isAssignmentLoading: false,
-      isCanSubmit: true,
-      userAssignment: {
-        assignmentUserAnswer: []
-      },
-      assignmentId: '',
-      reviewData: {},
-      answerCheck: {},
-      assignmentOptionKey: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'],
     },
-    computed: {
-      // 作业总分计算
-      assignmentScore() {
-        let score = 0;
-        for (const key in this.reviewData) {
-          if (this.reviewData[key].constructor === Object) {
-            console.log(key, this.reviewData[key].score)
-            score += parseInt(this.reviewData[key].score || 0)
-          }
+
+    isAssignmentLoading: false,
+    isCanSubmit: true,
+    userAssignment: {
+      assignmentUserAnswer: []
+    },
+    assignmentId: '',
+    reviewData: {},
+    answerCheck: {},
+    assignmentOptionKey: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'],
+  },
+  computed: {
+    // 作业总分计算
+    assignmentScore() {
+      let score = 0;
+      for (const key in this.reviewData) {
+        if (this.reviewData[key].constructor === Object) {
+          console.log(key, this.reviewData[key].score)
+          score += parseInt(this.reviewData[key].score || 0)
         }
-        return score
+      }
+      return score
+    }
+  },
+  mounted() {
+    const urlParams = new URLSearchParams(location.search);
+    this.assignmentId = urlParams.get('assignmentId');
+    this.doUiAction('getAssignmentData');
+  },
+  methods: {
+    async doUiAction(uiActionId, uiActionData) {
+      switch (uiActionId) {
+        case 'getAssignmentData':
+          await this.getAssignmentData();
+          break;
+        case 'openTableZebraLineMenu':
+          await this.openTableZebraLineMenu(uiActionData);
+          break;
+        case 'jumpToReviewPage':
+          await this.jumpToReviewPage(uiActionData);
+          break;
+        case 'revertReviewAssignment':
+          await this.revertReviewAssignment(uiActionData);
+          break;
+        case 'submitArticleAssignment':
+          await this.checkArticleAssignmentStatus(uiActionData);
+          await this.submitArticleAssignment(uiActionData);
+          break;
+        default:
+          console.error("[doUiAction] uiActionId not find", {uiActionId});
+          break;
       }
     },
-    mounted() {
-      const urlParams = new URLSearchParams(location.search);
-      this.assignmentId = urlParams.get('assignmentId');
-      this.doUiAction('getAssignmentData');
-    },
-    methods: {
-      async doUiAction(uiActionId, uiActionData) {
-        switch (uiActionId) {
-          case 'getAssignmentData':
-            await this.getAssignmentData();
-            break;
-          case 'openTableZebraLineMenu':
-            await this.openTableZebraLineMenu(uiActionData);
-            break;
-          case 'jumpToReviewPage':
-            await this.jumpToReviewPage(uiActionData);
-            break;
-          case 'revertReviewAssignment':
-            await this.revertReviewAssignment(uiActionData);
-            break;
-          case 'submitArticleAssignment':
-            await this.checkArticleAssignmentStatus(uiActionData);
-            await this.submitArticleAssignment(uiActionData);
-            break;
-          default:
-            console.error("[doUiAction] uiActionId not find", { uiActionId });
-            break;
-        }
-      },
 
-      // 获取作业数据
-      async getAssignmentData() {
-        this.isAssignmentLoading = true;
-        const rows = (await window.jianghuAxios({
-          data: {
-            appData: {
-              pageId: 'assignmentReview',
-              actionId: 'selectItemList',
-              actionData: {},
-              where: { assignmentId: this.assignmentId },
-            }
+    // 获取作业数据
+    async getAssignmentData() {
+      this.isAssignmentLoading = true;
+      const rows = (await window.jianghuAxios({
+        data: {
+          appData: {
+            pageId: 'assignmentReview',
+            actionId: 'selectItemList',
+            actionData: {},
+            where: {assignmentId: this.assignmentId},
           }
-        })).data.appData.resultData.rows;
-        this.isAssignmentLoading = false;
-        this.buildUserAssignment(rows);
-      },
+        }
+      })).data.appData.resultData.rows;
+      this.isAssignmentLoading = false;
+      this.buildUserAssignment(rows);
+    },
 
-      // ---------- <<<<<<<<<< 格式化处理作业数据 --------
-      buildUserAssignment(rows) {
-        if (rows.length) {
-          const userAssignment = rows[0];
-          let {
-            assignmentUserAnswer,
-            assignmentStandardAnswer,
-            assignmentReview
-          } = this.parseAssignmentResultData(userAssignment);
-          assignmentStandardAnswer.forEach((item, index) => {
-            this.answerCheck[item.id] = {
-              scoreType: 'score',
-              answer: item.component.answer,
-              answerString: this.getAnswerString(item.component),
-              isRight: this.checkAnswerIsRight(item.component, assignmentUserAnswer[index].user.answer),
-            }
-            const itemList = item.component.itemList
-            if (itemList) {
-              const parent = assignmentUserAnswer[index]
-              itemList.map(childItem => {
-                const childItemAnswer = parent.component.itemList.filter(answerItem => answerItem.id === childItem.id)[0] || {}
-                this.answerCheck[childItem.id] = {
-                  scoreType: 'score',
-                  answer: childItem.component.answer,
-                  answerString: this.getAnswerString(childItem.component),
-                  isRight: this.checkAnswerIsRight(childItem.component, childItemAnswer.user.answer),
-                }
-              })
-            }
-          })
-          console.log('answerCheck:', this.answerCheck);
-          this.reviewData = assignmentReview;
-          console.log(this.reviewData);
-          userAssignment.assignmentUserAnswer = assignmentUserAnswer;
-          this.userAssignment = userAssignment;
-          this.userAssignment.assignmentUserAnswer.forEach((item, index) => {
-            if (item.component.type === 'markdown') {
-              console.log(`editorMdContainer-${index}`)
-              this.initEditorMd(this, `editorMdContainer-${index}`, item.answer, () => {
-              }, (content, contentForSeo) => {
-                item.answer = content;
-              });
-            }
-          })
-        }
-      },
-      parseAssignmentResultData(userAssignment) {
-        const assignmentUserAnswer = JSON.parse(userAssignment.assignmentUserAnswer || '[]');
-        const assignmentStandardAnswer = JSON.parse(userAssignment.assignmentStandardAnswer || '[]');
-        let assignmentReview = {};
-        if (userAssignment.assignmentReview) {
-          assignmentReview = JSON.parse(userAssignment.assignmentReview || '{}');
-        } else {
-          assignmentUserAnswer.forEach(item => {
-            assignmentReview[item.id] = {
-              score: '',
-              comment: ''
-            }
-
-            const itemList = item.component.itemList
-            if (itemList) {
-              itemList.map(childItem => {
-                assignmentReview[childItem.id] = {
-                  score: '',
-                  comment: ''
-                }
-              })
-            }
-          })
-        }
-        return { assignmentUserAnswer, assignmentStandardAnswer, assignmentReview };
-      },
-      checkAnswerIsRight({ type, answer, statement }, userAnswer) {
-        switch (type) {
-          case "单选":
-          case "singleSelect":
-            return userAnswer === answer;
-          case "多选":
-          case "multipleSelect":
-            console.log(answer)
-            return !_.union(answer, userAnswer).some(e => !answer.includes(e) || !userAnswer.includes(e))
-          case "fillBlank":
-            const answerIdList = statement.filter(e => e.type === 'input').map(e => e.id);
-            const answerStr = statement.filter(e => e.type === 'input').map(e => e.value).join(',');
-            return answerStr === answerIdList.map(e => userAnswer[e]).join(',');
-          case "问答":
-          case "多行文本":
-          case "textarea":
-          case "questionAnswer":
-            return false;
-          case "富文本":
-          case "Markdown":
-          case "markdown":
-            return false;
-          default:
-            return false;
-        }
-      },
-      getAnswerInfo({ type, answer, selectOptionList, statement, userAnswer }) {
-        const answerInfo = {
-          answer: '',
-          isRight: false,
-        }
-        switch (type) {
-          case "singleSelect":
-            answerInfo.answer = this.assignmentOptionKey[selectOptionList.findIndex(e => e === answer)];
-          case "multipleSelect":
-            return answer.map((item, index) => {
-              return this.assignmentOptionKey[selectOptionList.findIndex(e => e === item)]
-            }).join(',');
-          case "fillBlank":
-            // console.log(JSON.stringify(answer, null, 2))
-            return statement.filter(e => e.type === 'input').map(e => e.value).join(',');
-          case "textarea":
-          case "questionAnswer":
-            return answer;
-          case "富文本":
-          case "markdown":
-            return '';
-          default:
-            return 'default';
-        }
-
-        return answerInfo;
-      },
-      initEditorMd(that, id, content, onImageUpload, change) {
-        that.$nextTick(() => {
-          if (document.getElementById(id)) {
-            document.getElementById(id).innerHTML = `<textarea style=\"display:none;\">${content || ""}</textarea>`;
-            that.editor = editormd.markdownToHTML(id, {
-              htmlDecode: "style,script,iframe",
-              emoji: true,
-              taskList: true,
-              tocm: true,
-              tex: true, // 默认不解析
-              flowChart: true, // 默认不解析
-              sequenceDiagram: true, // 默认不解析
-              codeFold: true
+    // ---------- <<<<<<<<<< 格式化处理作业数据 --------
+    buildUserAssignment(rows) {
+      if (rows.length) {
+        const userAssignment = rows[0];
+        let {
+          assignmentUserAnswer,
+          assignmentStandardAnswer,
+          assignmentReview
+        } = this.parseAssignmentResultData(userAssignment);
+        assignmentStandardAnswer.forEach((item, index) => {
+          this.answerCheck[item.id] = {
+            scoreType: 'score',
+            answer: item.component.answer,
+            answerString: this.getAnswerInfo(item.component),
+            isRight: this.checkAnswerIsRight(item.component, assignmentUserAnswer[index].user.answer),
+          }
+          const itemList = item.component.itemList
+          if (itemList) {
+            const parent = assignmentUserAnswer[index]
+            itemList.map(childItem => {
+              const childItemAnswer = parent.component.itemList.filter(answerItem => answerItem.id === childItem.id)[0] || {}
+              this.answerCheck[childItem.id] = {
+                scoreType: 'score',
+                answer: childItem.component.answer,
+                answerString: this.getAnswerInfo(childItem.component),
+                isRight: this.checkAnswerIsRight(childItem.component, childItemAnswer.user.answer),
+              }
+            })
+          }
+        })
+        console.log('answerCheck:', this.answerCheck);
+        this.reviewData = assignmentReview;
+        console.log(this.reviewData);
+        userAssignment.assignmentUserAnswer = assignmentUserAnswer;
+        this.userAssignment = userAssignment;
+        this.userAssignment.assignmentUserAnswer.forEach((item, index) => {
+          if (item.component.type === 'markdown') {
+            console.log(`editorMdContainer-${index}`)
+            this.initEditorMd(this, `editorMdContainer-${index}`, item.answer, () => {
+            }, (content, contentForSeo) => {
+              item.answer = content;
             });
           }
         })
-      },
-      // ---------- 格式化处理作业数据 >>>>>>>>>> --------
-      // ---------- <<<<<<<<<< 撤销提交 uiAction --------
-      async revertReviewAssignment() {
-        const actionData = {
-          assignmentReviewStatus: ''
-        }
-        window.vtoast.loading("撤销批改中...");
-        const { assignmentId } = this.userAssignment;
-        await this.submitAssignment(assignmentId, actionData);
-        // 提示撤销成功
-        this.userAssignment.assignmentReviewStatus = '';
-        window.vtoast.success('撤销批改成功');
-      },
-      // ---------- 撤销提交 uiAction >>>>>>>>>> --------
-      // ---------- <<<<<<<<<< 提交批改 uiAction --------
-      async checkArticleAssignmentStatus() {
-        if (!['submit', 'publish'].includes(this.userAssignment.assignmentSubmitStatus)) {
-          const failMsg = "用户尚未提交作业，禁止批改"
-          window.vtoast.fail(failMsg);
-          throw new Error(`[checkArticleAssignmentStatus] ${failMsg}`);
-        }
-      },
-      buildSubmitActionData(assignmentId, publish) {
-        const actionData = {
-          assignmentReview: JSON.stringify(this.reviewData),
-          assignmentScore: this.assignmentScore,
-          assignmentId
-        }
-        if (publish) {
-          actionData.assignmentReviewStatus = publish;
-          actionData.assignmentReviewAt = dayjs().format();
-          actionData.assignmentReviewUserId = '<$ ctx.userInfo.userId $>';
-        }
-        return actionData;
-      },
-      async submitAssignment(assignmentId, actionData) {
-        await window.jianghuAxios({
-          data: {
-            appData: {
-              pageId: "assignmentReview",
-              actionId: "updateItem",
-              where: { assignmentId },
-              actionData
-            }
+      }
+    },
+    parseAssignmentResultData(userAssignment) {
+      const assignmentUserAnswer = JSON.parse(userAssignment.assignmentUserAnswer || '[]');
+      const assignmentStandardAnswer = JSON.parse(userAssignment.assignmentStandardAnswer || '[]');
+      let assignmentReview = {};
+      if (userAssignment.assignmentReview) {
+        assignmentReview = JSON.parse(userAssignment.assignmentReview || '{}');
+      } else {
+        assignmentUserAnswer.forEach(item => {
+          assignmentReview[item.id] = {
+            score: '',
+            comment: ''
+          }
+
+          const itemList = item.component.itemList
+          if (itemList) {
+            itemList.map(childItem => {
+              assignmentReview[childItem.id] = {
+                score: '',
+                comment: ''
+              }
+            })
           }
         })
-      },
-      async submitArticleAssignment({ publish = false } = {}) {
-        if (!this.isCanSubmit) return;
-        this.isCanSubmit = false;
-        window.vtoast.loading("保存批改中...");
-        const actionData = this.buildSubmitActionData(this.assignmentId, publish);
-        await this.submitAssignment(this.assignmentId, actionData);
-        window.vtoast.success(publish ? "提交批改成功" : "保存批改成功");
-        this.isCanSubmit = true;
-        this.doUiAction('getAssignmentData', {});
-      },
-      // ---------- 提交批改 uiAction >>>>>>>>>> --------
-      // ---------- 斑马纹开关 uiAction >>>>>>>>>> --------
-      async openTableZebraLineMenu(funObj) {
-        this.tableZebraLineMenuPosition.x = funObj.x - funObj.offsetX + 10;
-        this.tableZebraLineMenuPosition.y = window.innerHeight - 50;
-        this.isTableZebraLineMenuShown = !this.isTableZebraLineMenuShown;
-      },
-      // ---------- <<<<<<<<<< 斑马纹开关 uiAction --------
-      // ---------- 跳转作业批改 uiAction >>>>>>>>>> --------
-      async jumpToReviewPage({ assignmentId }) {
-        window.location.href = `/<$ ctx.app.config.appId $>/page/assignmentReview?assignmentId=${assignmentId}`;
-      },
-      // ---------- <<<<<<<<<<< 跳转作业批改 uiAction --------
-    }
-  })
+      }
+      return {assignmentUserAnswer, assignmentStandardAnswer, assignmentReview};
+    },
+    checkAnswerIsRight({type, answer, statement}, userAnswer) {
+      switch (type) {
+        case "单选":
+        case "singleSelect":
+          return userAnswer === answer;
+        case "多选":
+        case "multipleSelect":
+          console.log(answer)
+          return !_.union(answer, userAnswer).some(e => !answer.includes(e) || !userAnswer.includes(e))
+        case "fillBlank":
+          const answerIdList = statement.filter(e => e.type === 'input').map(e => e.id);
+          const answerStr = statement.filter(e => e.type === 'input').map(e => e.value).join(',');
+          return answerStr === answerIdList.map(e => userAnswer[e]).join(',');
+        case "问答":
+        case "多行文本":
+        case "textarea":
+        case "questionAnswer":
+          return false;
+        case "富文本":
+        case "Markdown":
+        case "markdown":
+          return false;
+        default:
+          return false;
+      }
+    },
+    getAnswerInfo({type, answer, selectOptionList, statement, userAnswer}) {
+      const answerInfo = {
+        answer: '',
+        isRight: false,
+      }
+      switch (type) {
+        case "singleSelect":
+          answerInfo.answer = this.assignmentOptionKey[selectOptionList.findIndex(e => e === answer)];
+          return answerInfo;
+        case "multipleSelect":
+          return answer.map((item, index) => {
+            return this.assignmentOptionKey[selectOptionList.findIndex(e => e === item)]
+          }).join(',');
+        case "fillBlank":
+          // console.log(JSON.stringify(answer, null, 2))
+          return statement.filter(e => e.type === 'input').map(e => e.value).join(',');
+        case "textarea":
+        case "questionAnswer":
+          return answer;
+        case "富文本":
+        case "markdown":
+          return '';
+        default:
+          return 'default';
+      }
+    },
+    initEditorMd(that, id, content, onImageUpload, change) {
+      that.$nextTick(() => {
+        if (document.getElementById(id)) {
+          document.getElementById(id).innerHTML = `<textarea style=\"display:none;\">${content || ""}</textarea>`;
+          that.editor = editormd.markdownToHTML(id, {
+            htmlDecode: "style,script,iframe",
+            emoji: true,
+            taskList: true,
+            tocm: true,
+            tex: true, // 默认不解析
+            flowChart: true, // 默认不解析
+            sequenceDiagram: true, // 默认不解析
+            codeFold: true
+          });
+        }
+      })
+    },
+    // ---------- 格式化处理作业数据 >>>>>>>>>> --------
+    // ---------- <<<<<<<<<< 撤销提交 uiAction --------
+    async revertReviewAssignment() {
+      const actionData = {
+        assignmentReviewStatus: ''
+      }
+      window.vtoast.loading("撤销批改中...");
+      const {assignmentId} = this.userAssignment;
+      await this.submitAssignment(assignmentId, actionData);
+      // 提示撤销成功
+      this.userAssignment.assignmentReviewStatus = '';
+      window.vtoast.success('撤销批改成功');
+    },
+    // ---------- 撤销提交 uiAction >>>>>>>>>> --------
+    // ---------- <<<<<<<<<< 提交批改 uiAction --------
+    async checkArticleAssignmentStatus() {
+      if (!['submit', 'publish'].includes(this.userAssignment.assignmentSubmitStatus)) {
+        const failMsg = "用户尚未提交作业，禁止批改"
+        window.vtoast.fail(failMsg);
+        throw new Error(`[checkArticleAssignmentStatus] ${failMsg}`);
+      }
+    },
+    buildSubmitActionData(assignmentId, publish) {
+      const actionData = {
+        assignmentReview: JSON.stringify(this.reviewData),
+        assignmentScore: this.assignmentScore,
+        assignmentId
+      }
+      if (publish) {
+        actionData.assignmentReviewStatus = publish;
+        actionData.assignmentReviewAt = dayjs().format();
+        actionData.assignmentReviewUserId = '<$ ctx.userInfo.userId $>';
+      }
+      return actionData;
+    },
+    async submitAssignment(assignmentId, actionData) {
+      await window.jianghuAxios({
+        data: {
+          appData: {
+            pageId: "assignmentReview",
+            actionId: "updateItem",
+            where: {assignmentId},
+            actionData
+          }
+        }
+      })
+    },
+    async submitArticleAssignment({publish = false} = {}) {
+      if (!this.isCanSubmit) return;
+      this.isCanSubmit = false;
+      window.vtoast.loading("保存批改中...");
+      const actionData = this.buildSubmitActionData(this.assignmentId, publish);
+      await this.submitAssignment(this.assignmentId, actionData);
+      window.vtoast.success(publish ? "提交批改成功" : "保存批改成功");
+      this.isCanSubmit = true;
+      this.doUiAction('getAssignmentData', {});
+    },
+    // ---------- 提交批改 uiAction >>>>>>>>>> --------
+    // ---------- 斑马纹开关 uiAction >>>>>>>>>> --------
+    async openTableZebraLineMenu(funObj) {
+      this.tableZebraLineMenuPosition.x = funObj.x - funObj.offsetX + 10;
+      this.tableZebraLineMenuPosition.y = window.innerHeight - 50;
+      this.isTableZebraLineMenuShown = !this.isTableZebraLineMenuShown;
+    },
+    // ---------- <<<<<<<<<< 斑马纹开关 uiAction --------
+    // ---------- 跳转作业批改 uiAction >>>>>>>>>> --------
+    async jumpToReviewPage({assignmentId}) {
+      window.location.href = `/<$ ctx.app.config.appId $>/page/assignmentReview?assignmentId=${assignmentId}`;
+    },
+    // ---------- <<<<<<<<<<< 跳转作业批改 uiAction --------
+  }
+})
 </script>
 
 <style>
-  @media screen and (max-width: 600px) {
-    .right-box {
-      padding-bottom: 130px !important;
-    }
+@media screen and (max-width: 600px) {
+  .right-box {
+    padding-bottom: 130px !important;
+  }
+}
+
+.right-box .v-expansion-panel .v-expansion-panel-header {
+  min-height: auto;
+}
+
+.right-box .v-expansion-panel-content__wrap {
+  padding: 0px;
+}
+
+.right-box .v-expansion-panel .v-list-item__action,
+.v-list-item__avatar,
+.v-list-item__icon {
+  display: inline-block;
+  min-width: 24px;
+}
+
+.disabled-text {
+  color: gray;
+  background-color: #efefef;
+}
+
+@media (max-width: 600px) {
+  .sm-pt-2 {
+    padding-top: 10px;
   }
 
-  .right-box .v-expansion-panel .v-expansion-panel-header {
-    min-height: auto;
+  .sm-px-0 {
+    padding-left: 0;
+    padding-right: 0;
   }
-
-  .right-box .v-expansion-panel-content__wrap {
-    padding: 0px;
-  }
-
-  .right-box .v-expansion-panel .v-list-item__action,
-  .v-list-item__avatar,
-  .v-list-item__icon {
-    display: inline-block;
-    min-width: 24px;
-  }
-
-  .disabled-text {
-    color: gray;
-    background-color: #efefef;
-  }
-
-  @media (max-width: 600px) {
-    .sm-pt-2 {
-      padding-top: 10px;
-    }
-
-    .sm-px-0 {
-      padding-left: 0;
-      padding-right: 0;
-    }
-  }
+}
 </style>
 {% endblock %}
